@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quiz Filme Divertidamente</title>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background: #f7f1e3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  #quiz-container {
+    background: #fff;
+    border-radius: 10px;
+    padding: 30px 40px;
+    width: 400px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  }
+  h1 {
+    text-align: center;
+    color: #34495e;
+  }
+  .question {
+    font-size: 1.1em;
+    margin-bottom: 15px;
+  }
+  .options button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+    border: none;
+    background: #dcdde1;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    font-size: 1em;
+  }
+  .options button:hover {
+    background: #7f8fa6;
+    color: white;
+  }
+  .options button.correct {
+    background: #44bd32;
+    color: white;
+  }
+  .options button.wrong {
+    background: #e84118;
+    color: white;
+  }
+  #next-btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    background: #273c75;
+    border: none;
+    color: white;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+  }
+  #score {
+    text-align: center;
+    font-size: 1.2em;
+    margin-top: 20px;
+    color: #2f3640;
+  }
+</style>
+</head>
+<body>
+
+<div id="quiz-container">
+  <h1>Quiz: Filme Divertidamente</h1>
+  <div id="question-container">
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+  </div>
+  <button id="next-btn">Próxima</button>
+  <div id="score"></div>
+</div>
+
+<script>
+  const quizData = [
+    {
+      question: "Qual é o nome da menina protagonista de Divertidamente?",
+      options: ["Riley", "Molly", "Lisa", "Sally"],
+      answer: "Riley"
+    },
+    {
+      question: "Quais são as emoções principais que vivem na mente de Riley?",
+      options: ["Alegria, Tristeza, Raiva, Nojinho e Medo", "Felicidade, Raiva, Medo, Surpresa e Tristeza", "Alegria, Nojinho, Medo, Raiva e Culpa", "Tristeza, Raiva, Medo, Culpa e Alegria"],
+      answer: "Alegria, Tristeza, Raiva, Nojinho e Medo"
+    },
+    {
+      question: "Qual emoção tenta manter Riley feliz durante o filme?",
+      options: ["Alegria", "Tristeza", "Raiva", "Medo"],
+      answer: "Alegria"
+    },
+    {
+      question: "O que acontece quando Alegria e Tristeza se perdem na mente de Riley?",
+      options: [
+        "As outras emoções ficam confusas",
+        "Riley fica triste e confusa",
+        "Riley esquece sua família",
+        "Riley vira uma adulta"
+      ],
+      answer: "Riley fica triste e confusa"
+    },
+    {
+      question: "Onde Riley e sua família se mudam no filme?",
+      options: ["São Francisco", "Nova York", "Los Angeles", "Chicago"],
+      answer: "São Francisco"
+    }
+  ];
+
+  const questionEl = document.getElementById('question');
+  const optionsEl = document.getElementById('options');
+  const nextBtn = document.getElementById('next-btn');
+  const scoreEl = document.getElementById('score');
+
+  let currentQuestion = 0;
+  let score = 0;
+  let answered = false;
+
+  function loadQuestion() {
+    answered = false;
+    nextBtn.style.display = 'none';
+    scoreEl.innerText = '';
+    const q = quizData[currentQuestion];
+    questionEl.innerText = q.question;
+    optionsEl.innerHTML = '';
+    q.options.forEach(option => {
+      const btn = document.createElement('button');
+      btn.innerText = option;
+      btn.addEventListener('click', () => selectOption(btn, q.answer));
+      optionsEl.appendChild(btn);
+    });
+  }
+
+  function selectOption(selectedBtn, correctAnswer) {
+    if (answered) return;
+    answered = true;
+
+    const buttons = optionsEl.querySelectorAll('button');
+
+    buttons.forEach(btn => {
+      btn.disabled = true;
+      if (btn.innerText === correctAnswer) {
+        btn.classList.add('correct');
+      } else if (btn === selectedBtn) {
+        btn.classList.add('wrong');
+      }
+    });
+
+    if (selectedBtn.innerText === correctAnswer) {
+      score++;
+      scoreEl.innerText = "Resposta correta!";
+      scoreEl.style.color = "#44bd32";
+    } else {
+      scoreEl.innerText = "Resposta errada!";
+      scoreEl.style.color = "#e84118";
+    }
+
+    nextBtn.style.display = 'block';
+  }
+
+  nextBtn.addEventListener('click', () => {
+    currentQuestion++;
+    if (currentQuestion < quizData.length) {
+      loadQuestion();
+    } else {
+      showFinalScore();
+    }
+  });
+
+  function showFinalScore() {
+    questionEl.innerText = "Fim do Quiz!";
+    optionsEl.innerHTML = '';
+    nextBtn.style.display = 'none';
+    scoreEl.innerText = `Você acertou ${score} de ${quizData.length} perguntas.`;
+    scoreEl.style.color = "#2f3640";
+  }
+
+  // Inicializa o quiz
+  loadQuestion();
+</script>
+
+</body>
+</html>
